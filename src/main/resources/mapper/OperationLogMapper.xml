@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fiee.blog.mapper.OperationLogMapper">
+
+    <select id="getOperationLogs" resultType="com.fiee.blog.entity.OperationLog">
+        SELECT * FROM tb_operation_log
+            <where>
+                <if test="conditionVO.keywords != null and conditionVO.keywords != ''">
+                    and opt_desc LIKE concat('%',#{conditionVO.keywords},'%')
+                </if>
+            </where>
+        limit #{current},#{size};
+    </select>
+</mapper>
