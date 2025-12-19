@@ -36,9 +36,9 @@ public class OptLogAspectAround {
     private OperationLogService operationLogService;
     @Around("@annotation(optLog)")
     public Object logOperation(ProceedingJoinPoint joinPoint, OptLog optLog) throws Throwable{
-        // 获取RequestAttributes
+        // 获取 RequestAttributes
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        // 从获取RequestAttributes中获取HttpServletRequest的信息
+        // 从获取RequestAttributes中获取 HttpServletRequest的信息
         HttpServletRequest request = (HttpServletRequest) Objects.requireNonNull(requestAttributes).resolveReference(RequestAttributes.REFERENCE_REQUEST);
         //开始执行时间
         LocalDateTime start = LocalDateTime.now();
@@ -54,7 +54,7 @@ public class OptLogAspectAround {
             operationLog.setResponseData(JSON.toJSONString(e.getMessage()));
             throw e;
         }finally {
-            // 保存日志 TODO 优化：利用kafka 消息队列
+            // 保存日志 TODO 优化：利用Kafka 消息队列
 //            operationLogService.saveOperationLogAsync(operationLog);
             operationLogService.sendToKafkaToSaveLog(operationLog);
         }
