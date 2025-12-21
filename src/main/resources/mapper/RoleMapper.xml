@@ -4,17 +4,39 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.fiee.blog.mapper.RoleMapper">
 
-    <resultMap id="BaseResultMap" type="com.fiee.blog.entity.Role">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
-            <result property="roleLabel" column="role_label" jdbcType="VARCHAR"/>
-            <result property="isDisable" column="is_disable" jdbcType="TINYINT"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    <resultMap id="RolePermissionMap" type="com.fiee.blog.dto.ResourceRoleDTO">
+        <id column="id" property="id"/>
+        <result column="url" property="url"/>
+        <result column="request_method" property="requestMethod"/>
+        <result column="is_anonymous" property="isAnonymous" />
+        <collection property="roleList" ofType="java.lang.String">
+            <constructor>
+                <arg column="role_label"/>
+            </constructor>
+        </collection>
     </resultMap>
-
-    <sql id="Base_Column_List">
-        id,role_name,role_label,
-        is_disable,create_time,update_time
-    </sql>
+    <select id="listResourceRoles" resultMap="RolePermissionMap">
+        SELECT
+            re.id,
+            is_anonymous,
+            url,
+            request_method,
+            role_label
+        FROM
+            tb_resource re
+                LEFT JOIN tb_role_resource rep on re.id = rep.resource_id
+                LEFT JOIN tb_role r on rep.role_id = r.id
+        WHERE
+            parent_id is NOT NULL
+    </select>
+    <select id="listRolesByUserAuthId" resultType="java.lang.String">
+        SELECT
+            role_label
+        FROM
+            tb_role r,
+            tb_user_role ur
+        WHERE
+            r.id = ur.role_id
+          AND ur.user_id = #{userAuthId}
+    </select>
 </mapper>

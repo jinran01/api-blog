@@ -1,6 +1,8 @@
 package com.fiee.blog.entity;
 
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
@@ -8,6 +10,7 @@ import lombok.Data;
  * @TableName tb_user_info
  */
 @Data
+@TableName("tb_user_info")
 public class UserInfo {
     /**
      * 用户ID
